@@ -129,18 +129,22 @@ function drawButtons() {
 
 // Timers
 function drawTimer() {
-    ctx.beginPath();
-    ctx.arc(400, 300, 100, -Math.PI / 2, (timerProgress * 2 - 0.5) * Math.PI, false);
-    ctx.lineWidth = 10;
-    ctx.strokeStyle = '#00B4D8';
-    ctx.stroke();
-    timerProgress -= 0.001;
-    if (timerProgress <= 0) {
-        timerProgress = 1;
-        canvas.classList.add('vibrate');
-        setTimeout(() => canvas.classList.remove('vibrate'), 200);
+    if (timerAnimation) {
+        ctx.beginPath();
+        ctx.arc(400, 300, 100, -Math.PI / 2, (timerProgress * 2 - 0.5) * Math.PI, false);
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = '#00B4D8';
+        ctx.stroke();
+        timerProgress -= 0.001;
+        if (timerProgress <= 0) {
+            timerProgress = 1;
+            if (notifications) {
+                canvas.classList.add('vibrate');
+                setTimeout(() => canvas.classList.remove('vibrate'), 200);
+            }
+        }
+        requestAnimationFrame(drawTimer);
     }
-    requestAnimationFrame(drawTimer);
 }
 
 // Sensory Regulation
@@ -172,13 +176,13 @@ function drawSensoryBreak() {
     }
     animateElements();
 
-    // Audio (simulated, would require actual file in production)
-    const audio = new Audio('rain.mp3');
+    // Audio (commented out due to missing file, to prevent errors)
+    /* const audio = new Audio('rain.mp3');
     audio.volume = 0.3;
     audio.loop = true;
-    audio.play();
+    audio.play(); */
 
-    // Brightness/Volume Slider
+    // Brightness/Volume Slider (simulated, no actual functionality without UI)
     ctx.fillStyle = '#00B4D8';
     ctx.fillRect(50, 500, 200, 50);
     ctx.fillStyle = '#FFF';
@@ -190,6 +194,9 @@ function drawSensoryBreak() {
 
 // Settings Panel
 let settingsVisible = false;
+let timerAnimation = true;
+let notifications = true;
+
 function drawSettings() {
     if (settingsVisible) {
         ctx.fillStyle = '#333';
@@ -198,6 +205,7 @@ function drawSettings() {
         ctx.fillText('Settings', 310, 130);
         ctx.fillText('Toggle Timer Animation: ' + (timerAnimation ? 'On' : 'Off'), 310, 160);
         ctx.fillText('Toggle Notifications: ' + (notifications ? 'On' : 'Off'), 310, 190);
+        ctx.fillText('Scene: ' + (currentScene === 'sky' ? 'Sky' : 'Forest'), 310, 220);
     }
     ctx.fillStyle = '#00B4D8';
     ctx.fillRect(700, 10, 90, 30);
@@ -210,9 +218,6 @@ function toggleSettings() {
     drawInterface();
 }
 
-let timerAnimation = true;
-let notifications = true;
-
 canvas.addEventListener('click', (e) => {
     const x = e.clientX - canvas.offsetLeft;
     const y = e.clientY - canvas.offsetTop;
@@ -223,6 +228,13 @@ canvas.addEventListener('click', (e) => {
         if (x > 310 && x < 410 && y > 190 && y < 210) {
             notifications = !notifications;
         }
+        if (x > 310 && x < 410 && y > 220 && y < 240) {
+            currentScene = currentScene === 'sky' ? 'forest' : 'sky';
+        }
+        drawInterface();
+    }
+    if (x > 700 && x < 790 && y > 10 && y < 40) {
+        toggleSettings();
     }
 });
 
