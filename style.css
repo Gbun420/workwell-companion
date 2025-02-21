@@ -1,0 +1,22 @@
+body {
+    margin: 0;
+    background: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+#workCanvas {
+    border: 2px solid #FFF;
+    outline: none;
+}
+.vibrate {
+    animation: vibrate 0.1s 2;
+}
+@keyframes vibrate {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    50% { transform: translateX(2px); }
+    75% { transform: translateX(-2px); }
+    100% { transform: translateX(0); }
+}
